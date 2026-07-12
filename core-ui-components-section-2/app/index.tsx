@@ -7,20 +7,32 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const onButtonClick = () => {
-    Alert.alert("Button clicked!");
-  };
-
   const pressableClick = () => {
     Alert.alert("Pressable clicked!");
   };
 
   const touchableOpacityClick = () => {
     Alert.alert("TouchableOpacity clicked!");
+  };
+
+  const checkPlatform = () => {
+    const specs = [
+      `OS: ${Platform.OS}`,
+      `Version: ${String(Platform.Version)}`,
+      `isPad: ${String(Platform.isPad)}`,
+      `isTV: ${String(Platform.isTV)}`,
+      `isTesting: ${String(Platform.isTesting)}`,
+      "",
+      "Constants:",
+      JSON.stringify(Platform.constants, null, 2),
+    ].join("\n");
+
+    Alert.alert("Platform Specs", specs);
   };
 
   return (
@@ -35,18 +47,17 @@ export default function HomeScreen() {
           >
             CLICK HERE!
           </Text>{" "}
-          typesetting industry. Lorem Ipsum has been the industry's standard
+          typesetting industry. Lorem Ipsum has been the industry&apos;s standard
           dummy text ever since 1966, when designers at Letraset and James
           Mosley, the librarian at St Bride Printing Library in London, took a
           1914 Cicero translation and scrambled it to make dummy text for
-          Letraset's Body Type sheets. It has survived not only many decades,
+          Letraset&apos;s Body Type sheets. It has survived not only many decades,
           but also the leap into electronic typesetting, remaining essentially
           unchanged. It was popularised thanks to these sheets and more recently
           with desktop publishing software like Aldus PageMaker and Microsoft
           Word including versions of Lorem Ipsum.a
         </Text>
 
-        {}
 
         <Pressable onPress={pressableClick}>
           <Image
@@ -63,7 +74,7 @@ export default function HomeScreen() {
           ></Image>
         </TouchableOpacity>
 
-        <Button title="Click me" onPress={onButtonClick} />
+        <Button title="Click me" onPress={checkPlatform} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -105,7 +116,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
 });
-
 /*
 SafeAreaView
 Text
