@@ -8,6 +8,8 @@ import {
   Pressable,
   TouchableOpacity,
   Platform,
+  View,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -47,34 +49,65 @@ export default function HomeScreen() {
           >
             CLICK HERE!
           </Text>{" "}
-          typesetting industry. Lorem Ipsum has been the industry&apos;s standard
-          dummy text ever since 1966, when designers at Letraset and James
-          Mosley, the librarian at St Bride Printing Library in London, took a
-          1914 Cicero translation and scrambled it to make dummy text for
-          Letraset&apos;s Body Type sheets. It has survived not only many decades,
-          but also the leap into electronic typesetting, remaining essentially
-          unchanged. It was popularised thanks to these sheets and more recently
-          with desktop publishing software like Aldus PageMaker and Microsoft
-          Word including versions of Lorem Ipsum.a
+          typesetting industry. Lorem Ipsum has been the industry&apos;s
+          standard dummy text ever since 1966, when designers at Letraset and
+          James Mosley, the librarian at St Bride Printing Library in London,
+          took a 1914 Cicero translation and scrambled it to make dummy text for
+          Letraset&apos;s Body Type sheets. It has survived not only many
+          decades, but also the leap into electronic typesetting, remaining
+          essentially unchanged. It was popularised thanks to these sheets and
+          more recently with desktop publishing software like Aldus PageMaker
+          and Microsoft Word including versions of Lorem Ipsum.a
         </Text>
 
+        <View
+          style={{
+            marginTop: 20,
+            marginBottom: 20,
+            flexDirection: "horizontal",
+          }}
+        >
+          <Pressable onPress={pressableClick}>
+            <Image
+              source={require("../assets/images/dictator.jpg")}
+              style={styles.imageStyle}
+            ></Image>
+          </Pressable>
 
-        <Pressable onPress={pressableClick}>
-          <Image
-            source={require("../assets/images/dictator.jpg")}
-            style={styles.imageStyle}
-          ></Image>
-        </Pressable>
-
-        <TouchableOpacity onPress={touchableOpacityClick}>
-          <Image
-            source={{ uri: "https://picsum.photos/seed/picsum/200/300" }}
-            style={styles.circleImage}
-            blurRadius={1}
-          ></Image>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={touchableOpacityClick}>
+            <Image
+              source={{ uri: "https://picsum.photos/seed/picsum/200/300" }}
+              style={styles.circleImage}
+              blurRadius={1}
+            ></Image>
+          </TouchableOpacity>
+        </View>
 
         <Button title="Click me" onPress={checkPlatform} />
+
+        <ActivityIndicator size="large" />
+
+        <View style={styles.horizontalFlex}>
+          <View style={{ backgroundColor: "blue", flex: 1 }}></View>
+          <View style={{ backgroundColor: "green", flex: 5 }}></View>
+          <View style={{ backgroundColor: "yellow", flex: 1 }}></View>
+        </View>
+
+        <View style={styles.verticalFlex}>
+          <View style={{ backgroundColor: "blue", flex: 1 }}></View>
+          <View style={{ backgroundColor: "green", flex: 2 }}></View>
+          <View style={{ backgroundColor: "yellow", flex: 1 }}></View>
+        </View>
+
+        <View style={styles.wrapFlex}>
+          <View style={{ backgroundColor: "blue", width: 60, height:200 }}></View>
+          <View style={{ backgroundColor: "green", width: 60 , height:200 }}></View>
+          <View style={{ backgroundColor: "yellow", width: 60, height:200  }}></View>
+          <View style={{ backgroundColor: "orange", width: 60 , height:200 }}></View>
+          <View style={{ backgroundColor: "purple", width: 60 , height:200 }}></View>
+          <View style={{ backgroundColor: "cyan", width: 60 , height:200 }}></View>
+          <View style={{ backgroundColor: "gold", width: 60 , height:200 }}></View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -114,6 +147,31 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignSelf: "center",
     borderRadius: 100,
+  },
+
+  verticalFlex: {
+    backgroundColor: "red",
+    height: 200,
+    marginTop: 20,
+    padding: 10,
+    flexDirection: "column",
+  },
+
+  horizontalFlex: {
+    backgroundColor: "red",
+    height: 200,
+    marginTop: 20,
+    padding: 10,
+    flexDirection: "row",
+  },
+
+  wrapFlex: {
+    backgroundColor: "red",
+    flexWrap: "wrap",
+    alignContent: "flex-start",
+    flexDirection: "row",
+    marginTop: 20,
+    padding: 10,
   },
 });
 /*
