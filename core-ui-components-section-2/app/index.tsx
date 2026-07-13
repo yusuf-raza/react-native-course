@@ -269,4 +269,6 @@ Flex wrap          → Wrap
 Loaders            → CircularProgressIndicator
 Views              → Container / SizedBox
 margin and padding → EdgeInsets (Padding widget / Container margin)
+Platform           → Platform (dart:io) or Theme.of(context).platform
+
 */
