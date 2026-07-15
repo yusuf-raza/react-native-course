@@ -23,7 +23,24 @@ import {
   Platform, // Flutter: Platform from dart:io, or Theme.of(context).platform
   View, // Flutter: Container / SizedBox — the generic layout box (like a <div>)
   ActivityIndicator, // Flutter: CircularProgressIndicator
+  Dimensions, // Flutter: MediaQuery.of(context).size
 } from "react-native";
+
+// react-native-size-matters: helpers that SCALE sizes to the device so a layout
+// designed on one phone looks right on another (small phone vs tablet).
+//   s(n)  = scale: scales n based on screen WIDTH   (good for widths, horizontal spacing, font size)
+//   vs(n) = verticalScale: scales n based on screen HEIGHT (good for heights, vertical spacing)
+//   (there's also ms(n, factor) = moderateScale, a softer scale that won't blow up on big screens)
+// Flutter: no built-in equivalent — you'd hand-roll this off MediaQuery.of(context).size,
+// or reach for a package like flutter_screenutil (.w / .h / .sp extensions).
+import { s, vs } from "react-native-size-matters";
+// useState: React's built-in HOOK for local component state. A "hook" is a
+// special function (name always starts with "use") that lets a plain function
+// component remember values across re-renders and re-render when they change.
+// Flutter parallel: this is what turns a StatelessWidget into a StatefulWidget —
+// useState ≈ a `State` field plus setState(). Rules of hooks: only call them at
+// the TOP LEVEL of the component (never inside conditions, loops, or handlers).
+import { useState} from "react";
 // SafeAreaView keeps content out of the notch / status bar / home indicator.
 // Flutter: the SafeArea widget does exactly this. (We import RN's from the
 // community package because it handles real device insets better.)
@@ -58,6 +75,45 @@ export default function HomeScreen() {
     ].join("\n");
 
     Alert.alert("Platform Specs", specs);
+  };
+
+  // Dimensions.get(...) returns the device size in density-independent pixels.
+  // "window" vs "screen" — a subtle but important distinction:
+  //   "window" = the area your app can actually draw in (on Android this EXCLUDES
+  //              the status bar / navigation bar). This is what you usually want.
+  //   "screen" = the full physical display, bars included. So on Android screen >= window;
+  //              on iOS the two are typically equal.
+  // Flutter parallel: MediaQuery.of(context).size ≈ "window" (the usable area);
+  // the full display maps to the physical screen via MediaQueryData.padding/viewInsets.
+  // GOTCHA: this reads the size ONCE at render. It does NOT auto-update on rotation
+  // or split-screen. To react to changes, use the useWindowDimensions() hook instead
+  // (Flutter: MediaQuery already rebuilds you on size changes automatically).
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+  const screenWidth = Dimensions.get("screen").width;
+  const screenHeight = Dimensions.get("screen").height;
+
+
+  // useState(0) returns a 2-element array you destructure:
+  //   count    = the current value (starts at the initial arg, 0)
+  //   setCount = the setter — call it to update the value AND trigger a re-render.
+  // You must NOT mutate `count` directly (count++ does nothing on screen) — always
+  // go through setCount, the same way Flutter forces changes through setState().
+  // Flutter parallel: `int count = 0;` in State + `setState(() => count++)`.
+  const [count, setCount ] = useState(0);
+
+  const increaseCount = () => {
+    // Passing a plain value. Works here, but note: `count` is the value captured
+    // at the time this render's function was created. If you called setCount twice
+    // in a row, both would read the SAME stale `count` and you'd only advance by 1.
+    // SAFER pattern (updater form): setCount(prev => prev + 1) — RN hands you the
+    // latest value. Flutter's setState reads the live field, so it doesn't have
+    // this "stale closure" trap; hooks do, so the updater form is the habit to build.
+    setCount(count + 1);
+  };
+
+  const decreaseCount = () => {
+    setCount(count - 1);
   };
 
   return (
@@ -170,13 +226,125 @@ export default function HomeScreen() {
             like an RN row without flexWrap. `alignContent` below == Wrap's
             `runAlignment`. */}
         <View style={styles.wrapFlex}>
-          <View style={{ backgroundColor: "blue", width: 60, height:200 }}></View>
-          <View style={{ backgroundColor: "green", width: 60 , height:200 }}></View>
-          <View style={{ backgroundColor: "yellow", width: 60, height:200  }}></View>
-          <View style={{ backgroundColor: "orange", width: 60 , height:200 }}></View>
-          <View style={{ backgroundColor: "purple", width: 60 , height:200 }}></View>
-          <View style={{ backgroundColor: "cyan", width: 60 , height:200 }}></View>
-          <View style={{ backgroundColor: "gold", width: 60 , height:200 }}></View>
+          <View
+            style={{ backgroundColor: "blue", width: 60, height: 200 }}
+          ></View>
+          <View
+            style={{ backgroundColor: "green", width: 60, height: 200 }}
+          ></View>
+          <View
+            style={{ backgroundColor: "yellow", width: 60, height: 200 }}
+          ></View>
+          <View
+            style={{ backgroundColor: "orange", width: 60, height: 200 }}
+          ></View>
+          <View
+            style={{ backgroundColor: "purple", width: 60, height: 200 }}
+          ></View>
+          <View
+            style={{ backgroundColor: "cyan", width: 60, height: 200 }}
+          ></View>
+          <View
+            style={{ backgroundColor: "gold", width: 60, height: 200 }}
+          ></View>
+        </View>
+
+        {/* SIZING DEMO — three ways to size a box, side by side:
+            1) black box: PERCENTAGE strings ("20%") = relative to the PARENT's size.
+               Flutter: FractionallySizedBox(widthFactor: 0.2, heightFactor: 0.2).
+            2) yellow box: s()/vs() = react-native-size-matters. Fixed design values
+               (100) that get SCALED to the device so they grow/shrink proportionally.
+            3) red box: same scaled approach at half the values (50) for contrast.
+            Note the parent myBox is flexDirection: "row", so these sit left→right.
+            GOTCHA: the black box's "20%" HEIGHT resolves against the parent's height —
+            but myBox has no explicit height, so it's only as tall as its content. The
+            yellow/red boxes give it height, and 20% of that is what the black box gets. */}
+        <View style={styles.myBox}>
+          <View
+            style={{ height: "20%", width: "20%", backgroundColor: "black" }}
+          ></View>
+          <View
+            style={{
+              height: vs(100),
+              width: s(100),
+              backgroundColor: "yellow",
+            }}
+          ></View>
+          <View
+            style={{ height: vs(50), width: s(50), backgroundColor: "red" }}
+          ></View>
+        </View>
+
+        {/* Render the Dimensions values computed above. {expr} embeds a JS value
+            into JSX — like Dart's "$var" / "${expr}" string interpolation, except
+            here each value must live inside a <Text> (you can't put a bare number
+            directly under a <View>; RN only renders strings/numbers inside <Text>).
+            Compare "window" vs "screen" here on Android and you'll see them differ. */}
+        <View>
+          <Text>Window width: {windowWidth}</Text>
+          <Text>Window height: {windowHeight}</Text>
+          <Text>Screen width: {screenWidth}</Text>
+          <Text>Screen height: {screenHeight}</Text>
+        </View>
+
+        {/* A simple counter with increase/decrease buttons. Flutter: Row(children: [...])
+            The buttons are now WIRED: onPress={increaseCount/decreaseCount} call the
+            setters, which re-render this component so {count} below updates live.
+            (Earlier these buttons had no onPress, so they did nothing.) This is the
+            RN render loop: state changes → component re-runs → JSX reflects new state,
+            exactly like a StatefulWidget rebuilding after setState. */}
+        <View
+          style={{
+            flexDirection: "row", // Flutter: Row
+            alignItems: "center", // vertical center (cross axis)   → Flutter crossAxisAlignment.center
+            justifyContent: "center", // horizontal center (main axis)  → Flutter mainAxisAlignment.centers
+            marginTop: 20,
+            height: 200,
+            backgroundColor: "lightgrey", // give the row a height so the buttons can center vertically
+          }}
+        >
+          <View
+            style={{
+              height: 50,
+              marginRight: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button title="increase" onPress={increaseCount} />
+          </View>
+
+          <View
+            style={{
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row", // Flutter: Row
+            }}
+          >
+            <Text
+              style={{
+                textAlignVertical: "center",
+                fontWeight: "700",
+                fontSize: 30,
+              }}
+            >
+              {/* {count} re-reads state on every render, so the number you see
+                  always matches the latest value. Flutter: Text('$count'). */}
+              {count}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              height: 50,
+              marginLeft: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button title="decrease" onPress={decreaseCount} />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -202,6 +370,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
+  },
+
+  myBox: {
+    backgroundColor: "grey",
+    flexDirection: "row",
+    margin: 10,
   },
   bodyText: {
     fontSize: 18,
@@ -270,5 +444,11 @@ Loaders            → CircularProgressIndicator
 Views              → Container / SizedBox
 margin and padding → EdgeInsets (Padding widget / Container margin)
 Platform           → Platform (dart:io) or Theme.of(context).platform
+Positioning         → Stack + Positioned
+Dimensions         → MediaQuery.of(context).size
+Responsive sizing   → MediaQuery.of(context).size + LayoutBuilder
+size-matters s/vs  → (no built-in) ~ flutter_screenutil .w / .h / .sp
+Percentage sizes   → FractionallySizedBox(widthFactor / heightFactor)
+useState / Hooks   → StatefulWidget State field + setState()
 
 */
