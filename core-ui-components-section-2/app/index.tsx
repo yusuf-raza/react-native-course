@@ -24,6 +24,8 @@ import {
   View, // Flutter: Container / SizedBox — the generic layout box (like a <div>)
   ActivityIndicator, // Flutter: CircularProgressIndicator
   Dimensions, // Flutter: MediaQuery.of(context).size
+  Modal,
+  ImageBackground,
 } from "react-native";
 
 // react-native-size-matters: helpers that SCALE sizes to the device so a layout
@@ -40,11 +42,13 @@ import { s, vs } from "react-native-size-matters";
 // Flutter parallel: this is what turns a StatelessWidget into a StatefulWidget —
 // useState ≈ a `State` field plus setState(). Rules of hooks: only call them at
 // the TOP LEVEL of the component (never inside conditions, loops, or handlers).
-import { useState} from "react";
+import { useState } from "react";
 // SafeAreaView keeps content out of the notch / status bar / home indicator.
 // Flutter: the SafeArea widget does exactly this. (We import RN's from the
 // community package because it handles real device insets better.)
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import EvilIcons from "@expo/vector-icons/EvilIcons";
 
 // A screen is a React component that RETURNS JSX describing the UI.
 // Flutter: this is your StatelessWidget's `Widget build(context) { return ... }`.
@@ -93,14 +97,13 @@ export default function HomeScreen() {
   const screenWidth = Dimensions.get("screen").width;
   const screenHeight = Dimensions.get("screen").height;
 
-
   // useState(0) returns a 2-element array you destructure:
   //   count    = the current value (starts at the initial arg, 0)
   //   setCount = the setter — call it to update the value AND trigger a re-render.
   // You must NOT mutate `count` directly (count++ does nothing on screen) — always
   // go through setCount, the same way Flutter forces changes through setState().
   // Flutter parallel: `int count = 0;` in State + `setState(() => count++)`.
-  const [count, setCount ] = useState(0);
+  const [count, setCount] = useState(0);
 
   const increaseCount = () => {
     // Passing a plain value. Works here, but note: `count` is the value captured
@@ -116,13 +119,31 @@ export default function HomeScreen() {
     setCount(count - 1);
   };
 
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const closeModal = () => {
+    // Keep modal closing logic in one place so both the Android back button
+    // and the explicit close button reuse the same state update.
+    // Flutter parallel: this is like calling `setState(() => isDialogOpen = false)`
+    // before popping a dialog route.
+    setModalVisible(false);
+  };
+
+  // Flutter parallel: this is the "open dialog" action, similar to
+  // `showDialog(...)` or pushing a modal route.
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
   return (
     // SafeAreaView is the outermost wrapper so nothing hides under the notch.
     // Flutter: SafeArea(child: ...)
+
     <SafeAreaView style={styles.safeArea}>
       {/* ScrollView = Flutter's SingleChildScrollView: it renders ALL children
           at once. For long/dynamic lists use <FlatList> (== ListView.builder),
           which only builds what's visible. */}
+
       <ScrollView showsVerticalScrollIndicator={true}>
         <Text style={styles.titleText}>Lorem Ipsum</Text>
 
@@ -346,6 +367,64 @@ export default function HomeScreen() {
             <Button title="decrease" onPress={decreaseCount} />
           </View>
         </View>
+
+        {/* Modal renders above the screen content when `visible` is true.
+            Flutter parallel: `showDialog(...)` / `showModalBottomSheet(...)`.
+            The widget is still part of the JSX tree, but it only appears when
+            the state flag says it should be shown. */}
+        <Button title="Show modal" onPress={() => setModalVisible(true)} />
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          onRequestClose={closeModal}
+        >
+          {/* onRequestClose is important on Android: it handles the system back
+              button, similar to dismissing a dialog route in Flutter. */}
+          <Text>Modal</Text>
+          {/* Flutter parallel: a dialog's close button would call Navigator.pop(context). */}
+          <Button title="close modal" onPress={closeModal} />
+
+          <EvilIcons
+            name="close"
+            size={24}
+            color="black"
+            // Flutter parallel: this is like putting an IconButton inside a dialog
+            // and wiring it to Navigator.pop(context).
+            onPress={closeModal}
+          />
+        </Modal>
+
+        {/* ImageBackground needs visible space and usually child content to be
+            noticeable. Flutter parallel: think of it like a Container with an
+            image decoration behind content in a Stack. */}
+        <View style={{ width: "100%", height: "30%", marginTop: 20 }}>
+          {/* This background has no children yet, so it may look like nothing is
+              happening even though the component is mounted. */}
+          <ImageBackground
+            source={require("../assets/images/background.jpg")}
+            style={{ width: "100%", height: 220, marginTop: 20 }}
+            imageStyle={{ borderRadius: 16 }}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0,0,0,0.35)",
+                borderRadius: 16,
+                padding: 16,
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 24, fontWeight: "700" }}>
+                Welcome
+              </Text>
+              <Text style={{ color: "white", marginTop: 8 }}>
+                This sits on top of the background image.
+              </Text>
+              <Button title="Learn more" onPress={() => {}} />
+            </View>
+          </ImageBackground>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -450,5 +529,8 @@ Responsive sizing   → MediaQuery.of(context).size + LayoutBuilder
 size-matters s/vs  → (no built-in) ~ flutter_screenutil .w / .h / .sp
 Percentage sizes   → FractionallySizedBox(widthFactor / heightFactor)
 useState / Hooks   → StatefulWidget State field + setState()
+Modal              → showDialog(...) / showModalBottomSheet(...) / Navigator.pop(context)
+Expo icons           → flutter_vector_icons package
+ImageBackground     → Container with BoxDecoration(image: DecorationImage(...))
 
 */
