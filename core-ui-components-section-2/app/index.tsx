@@ -613,7 +613,7 @@ export default function HomeScreen() {
             // "number-pad" for digits-only, or "decimal-pad" for digits + one dot.
             // Either way `number` is still a STRING — convert with Number(number)
             // before doing math. Flutter: TextInputType.number / .numberWithOptions.
-            keyboardType="numeric"
+            keyboardType="number-pad"
             onChangeText={(text) => setNumber(text)}
             value={number}
           />
