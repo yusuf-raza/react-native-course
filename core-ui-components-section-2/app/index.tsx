@@ -24,9 +24,15 @@ import {
   View, // Flutter: Container / SizedBox — the generic layout box (like a <div>)
   ActivityIndicator, // Flutter: CircularProgressIndicator
   Dimensions, // Flutter: MediaQuery.of(context).size
-  Modal,
+  Modal, // Flutter: showDialog / showModalBottomSheet — but see the note below
   ImageBackground,
+  TextInput, // Flutter: Container(decoration: BoxDecoration(image: DecorationImage(...)))
 } from "react-native";
+// MODAL — the biggest mental shift coming from Flutter. In Flutter a dialog is
+// IMPERATIVE: you *call* showDialog(context, ...) from an event handler and it
+// pushes a route. In RN the Modal is DECLARATIVE: it always lives in your JSX
+// tree, and a piece of state (`visible`) decides whether it's on screen. You
+// never "call" it — you flip a boolean and let the re-render do the work.
 
 // react-native-size-matters: helpers that SCALE sizes to the device so a layout
 // designed on one phone looks right on another (small phone vs tablet).
@@ -48,6 +54,14 @@ import { useState } from "react";
 // community package because it handles real device insets better.)
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// @expo/vector-icons ships several icon FONT FAMILIES (EvilIcons, Ionicons,
+// MaterialIcons, FontAwesome, ...). You import the family you want, then pick a
+// glyph from it by `name`. Browse the full set at https://icons.expo.fyi.
+// Flutter parallel: like the flutter_vector_icons / font_awesome_flutter packages —
+// each family is its own class, and `name="close"` plays the role of `Icons.close`.
+// GOTCHA: `name` is a plain string, so a typo silently renders nothing instead of
+// failing to compile the way a bad `Icons.foo` would in Dart. (TypeScript does
+// type these names, so your editor will catch it — but only if you're in a .tsx file.)
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 
 // A screen is a React component that RETURNS JSX describing the UI.
@@ -134,6 +148,18 @@ export default function HomeScreen() {
   const openModal = () => {
     setModalVisible(true);
   };
+
+
+  // One piece of state per input. These back the CONTROLLED TextInputs below
+  // (value={name} + onChangeText={setName}) — state is the single source of
+  // truth for what each field shows. Note every value is a STRING: onChangeText
+  // always hands you text, so `number` holds "42", not 42 (parse with Number()
+  // if you need to do math on it).
+  // Flutter parallel: each of these ≈ a TextEditingController for a TextField.
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+
 
   return (
     // SafeAreaView is the outermost wrapper so nothing hides under the notch.
@@ -372,6 +398,11 @@ export default function HomeScreen() {
             Flutter parallel: `showDialog(...)` / `showModalBottomSheet(...)`.
             The widget is still part of the JSX tree, but it only appears when
             the state flag says it should be shown. */}
+        {/* NOTE: this calls setModalVisible directly via an inline arrow, so the
+            `openModal` helper you defined above is currently unused — the close
+            side goes through `closeModal`, but the open side doesn't. Swapping
+            this to onPress={openModal} would make the pair symmetric. (Your call —
+            leaving it as-is is also fine, an inline arrow is idiomatic RN.) */}
         <Button title="Show modal" onPress={() => setModalVisible(true)} />
         <Modal
           visible={modalVisible}
@@ -392,22 +423,99 @@ export default function HomeScreen() {
             // and wiring it to Navigator.pop(context).
             onPress={closeModal}
           />
+
+          <View
+            style={{
+              height: 300,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "lightblue",
+              borderRadius: 16,
+              marginTop: 20,
+              padding: 16,
+            }}
+          >
+            <TextInput
+              style={{
+                height: 40,
+                borderColor: "gray",
+                borderRadius: 5,
+                borderWidth: 1,
+                width: "80%",
+                paddingHorizontal: 10,
+                marginTop: 20,
+              }}
+              placeholder="Enter name"
+              placeholderTextColor="#333"
+              keyboardType="default"
+              onChangeText={(text) => console.log(text)}
+            />
+            <TextInput
+              style={{
+                height: 40,
+                borderColor: "gray",
+                borderRadius: 5,
+                borderWidth: 1,
+                width: "80%",
+                paddingHorizontal: 10,
+                marginTop: 20,
+              }}
+              placeholder="Enter email"
+              placeholderTextColor="#333"
+              keyboardType="email-address"
+              onChangeText={(text) => console.log(text)}
+            />
+            <TextInput
+              style={{
+                height: 40,
+                borderColor: "gray",
+
+                borderRadius: 5,
+                borderWidth: 1,
+                width: "80%",
+                paddingHorizontal: 10,
+                marginTop: 20,
+              }}
+              placeholder="Enter number"
+              placeholderTextColor="#333"
+              keyboardType="numeric"
+              onChangeText={(text) => console.log(text)}
+            />
+          </View>
         </Modal>
 
         {/* ImageBackground needs visible space and usually child content to be
             noticeable. Flutter parallel: think of it like a Container with an
             image decoration behind content in a Stack. */}
-        <View style={{ width: "100%", height: "30%", marginTop: 20 }}>
-          {/* This background has no children yet, so it may look like nothing is
-              happening even though the component is mounted. */}
+        {/* GOTCHA — the "30%" height here does nothing. A percentage height
+            resolves against the PARENT's height, but this View's parent is the
+            ScrollView's content, which is unbounded (it grows to fit its
+            children — that's the whole point of scrolling). With no fixed
+            reference to take 30% OF, the value is ignored and the View just
+            wraps its child. The layout only works because the ImageBackground
+            below carries an explicit height: 220.
+            Flutter parallel: the same trap as putting a FractionallySizedBox
+            inside a ListView/SingleChildScrollView — unbounded main axis, so
+            the fraction has nothing to resolve against. */}
+        <View style={{ width: "100%", marginTop: 20 }}>
+          {/* (Stale comment: this DOES have children now — the overlay View
+              below. Worth deleting when you next touch this block.)
+              Note that ImageBackground takes TWO styles: `style` sizes/positions
+              the container, `imageStyle` targets the image itself (that's why
+              borderRadius has to go on imageStyle to actually round the photo).
+              Flutter parallel: `style` ≈ the Container's own constraints,
+              `imageStyle` ≈ the DecorationImage inside its BoxDecoration.
+              Children stack ON TOP of the image — so ImageBackground is really a
+              two-layer Stack with the image pinned behind. */}
           <ImageBackground
             source={require("../assets/images/background.jpg")}
-            style={{ width: "100%", height: 220, marginTop: 20 }}
+            style={{ width: "100%", height: 150, marginTop: 20 }}
             imageStyle={{ borderRadius: 16 }}
           >
             <View
               style={{
-                flex: 1,
+                height: "100%",
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: "rgba(0,0,0,0.35)",
@@ -424,6 +532,99 @@ export default function HomeScreen() {
               <Button title="Learn more" onPress={() => {}} />
             </View>
           </ImageBackground>
+        </View>
+        {/* CONTROLLED INPUTS — the real lesson. Each field pairs value={state}
+            with onChangeText={setter}, so state is the single source of truth:
+            the box only ever shows what state says. Contrast with the modal's
+            TextInputs above, which are UNCONTROLLED (no value, onChangeText just
+            logs) — they keep their own internal text you can't drive from state.
+            Flutter parallel: controlled ≈ a TextField wired to a
+            TextEditingController; uncontrolled ≈ a bare TextField you only read
+            from in onChanged.
+            GOTCHA — keyboard overlap: inside a ScrollView the on-screen keyboard
+            can cover the lower fields while typing. Wrap in <KeyboardAvoidingView>
+            to lift them. Flutter mostly handles this for you via Scaffold resize. */}
+        <View
+          style={{
+            height: 300,
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "lightblue",
+            borderRadius: 16,
+            marginTop: 20,
+            padding: 16,
+          }}
+        >
+          <TextInput
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderRadius: 5,
+              borderWidth: 1,
+              width: "80%",
+              paddingHorizontal: 10,
+              marginTop: 20,
+            }}
+            placeholder="Enter name"
+            placeholderTextColor="#333"
+            keyboardType="default"
+            // STYLE NOTE: `(text) => setName(text)` can just be `setName` — a
+            // state setter already takes the new value as its only arg, so the
+            // wrapper arrow is redundant. (Flutter: a tear-off `onChanged: _setName`
+            // vs `onChanged: (t) => _setName(t)`.) Same applies to the two below.
+            onChangeText={(text) => setName(text)}
+            value={name}
+          />
+          <TextInput
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderRadius: 5,
+              borderWidth: 1,
+              width: "80%",
+              paddingHorizontal: 10,
+              marginTop: 20,
+            }}
+            placeholder="Enter email"
+            placeholderTextColor="#333"
+            keyboardType="email-address"
+            // GOTCHA (real device): keyboardType only changes the KEY LAYOUT, not
+            // capitalization. On a phone the keyboard still auto-capitalizes the
+            // first letter → "John@..." for an email. Add autoCapitalize="none"
+            // (and usually autoCorrect={false}) to stop it. This won't show on web.
+            // Flutter: textCapitalization: TextCapitalization.none.
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
+          <TextInput
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderRadius: 5,
+              borderWidth: 1,
+              width: "80%",
+              paddingHorizontal: 10,
+              marginTop: 20,
+            }}
+            placeholder="Enter number"
+            placeholderTextColor="#333"
+            // "numeric" still allows a decimal point and some symbols. Use
+            // "number-pad" for digits-only, or "decimal-pad" for digits + one dot.
+            // Either way `number` is still a STRING — convert with Number(number)
+            // before doing math. Flutter: TextInputType.number / .numberWithOptions.
+            keyboardType="numeric"
+            onChangeText={(text) => setNumber(text)}
+            value={number}
+          />
+          {/* Live echo: because the inputs are controlled, this re-renders on
+              every keystroke and always mirrors state. This is the payoff of the
+              controlled pattern. Each {expr} must sit inside <Text> — a bare
+              value under a <View> throws the "Text strings must be rendered
+              within a <Text>" error you hit earlier. Flutter: Text('Name: $name ...'). */}
+          <Text style={{ marginTop: 20, fontSize: 16 }}>
+            Name: {name}, Email: {email}, Number: {number}
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
