@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "section-04-ui-mastering",
+    "slug": "section-04-ui-mastering",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

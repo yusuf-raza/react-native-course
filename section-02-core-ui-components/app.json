@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "core-ui-components-section-2",
-    "slug": "core-ui-components-section-2",
+    "name": "section-02-core-ui-components",
+    "slug": "section-02-core-ui-components",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
