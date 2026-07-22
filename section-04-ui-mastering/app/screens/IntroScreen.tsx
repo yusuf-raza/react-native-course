@@ -22,10 +22,9 @@ const IntroScreen = () => {
   return (
     <View style={styles.mainContainer}>
       <AppLogo />
-      <View style={styles.bottomRightImage}> 
+      <View style={styles.bottomRightImage}>
         <IntroBottomRightImage />
       </View>
-      
     </View>
   );
 };
