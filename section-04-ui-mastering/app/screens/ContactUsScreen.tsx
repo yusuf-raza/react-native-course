@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: s(30),
-    fontWeight: "bold",
     marginTop: s(16),
+    paddingTop: vs(18)
   },
   card: {
     backgroundColor: "#F5F5FA",
