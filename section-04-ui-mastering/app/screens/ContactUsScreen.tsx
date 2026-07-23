@@ -9,7 +9,7 @@ import InstagramIcon from "../components/InstagramIcon";
 import TwitterIcon from "../components/TwittterIcon";
 import TiktokIcon from "../components/TiktokIcon";
 import SnapchatIcon from "../components/SnacpchatIcon";
-  import { SafeAreaView } from "react-native-safe-area-context";   // ← consumer, not Provider
+import { SafeAreaView } from "react-native-safe-area-context"; // ← consumer, not Provider
 // Screen = a full page (Flutter: like a Scaffold's body / a route's widget).
 // It's just a component; nothing special makes it a "screen" other than convention
 // (living in /screens and being what a navigator renders).
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: s(30),
     marginTop: s(16),
-    paddingTop: vs(18)
+    paddingTop: vs(18),
   },
   card: {
     backgroundColor: "#F5F5FA",
