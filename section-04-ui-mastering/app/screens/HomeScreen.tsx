@@ -50,11 +50,24 @@ const HomeScreen = () => {
           numColumns={2}
           showsVerticalScrollIndicator={false}
           // columnWrapperStyle: style applied to each ROW of columns (only valid
-          // when numColumns > 1). space-between pushes the 2 cards to the edges.
+          // when numColumns > 1). The row is a flexDirection:"row" container, so
+          // this is where the horizontal spacing between the 2 cards is decided.
+          // Flutter parallel: the Row that GridView builds for each line.
+          //
+          // Since MeditationCard now uses flex:1, the sizing split is:
+          //   gap: s(8)  → carve out a fixed 8pt channel between the cards
+          //   flex: 1    → (in the card) the 2 cards split whatever is LEFT
+          // so both cards are always exactly equal, on any screen size.
+          //
+          // justifyContent:'space-between' is now a NO-OP and can be deleted:
+          // it distributes LEFTOVER free space, but flex:1 children already
+          // consume all of it, so there is nothing left to distribute. It only
+          // mattered back when the cards had a hardcoded width.
           columnWrapperStyle={
             {
               marginBottom :s(8),
-              justifyContent:'space-between'
+              justifyContent:'space-between',
+              gap :s(8)
             }
           }
         />
