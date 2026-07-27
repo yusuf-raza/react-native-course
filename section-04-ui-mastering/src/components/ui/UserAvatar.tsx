@@ -5,12 +5,12 @@ import React from "react";
 const UserAvatar = () => {
   return (
     <TouchableOpacity onPress={() => console.log("profile picture tapped")}>
-      {/* Image: for a NETWORK image you pass source={{ uri: "..." }} — an object,
-          hence the double braces (outer = JSX expression, inner = the object).
-          Flutter parallel: Image.network(url). For a bundled asset you'd write
-          source={require("./path.png")} instead (like an AssetImage).
-          GOTCHA: network images need an explicit width/height (set in styles.avatar)
-          or they collapse to 0 and don't show. */}
+      {/* Network image: source={{ uri }} — double braces because the outer pair
+          is the JSX expression and the inner pair is the object.
+          Flutter parallel: Image.network(url); a bundled asset would be
+          source={require("./path.png")}, i.e. AssetImage.
+          GOTCHA: network images need an explicit width/height or they collapse
+          to 0 and never appear. */}
       <Image
         style={styles.avatar}
         source={{

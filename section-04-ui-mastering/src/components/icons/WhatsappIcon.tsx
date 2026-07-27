@@ -1,11 +1,9 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
-// SVG icon component. RN has no built-in SVG — react-native-svg provides <Svg>,
-// <Path>, etc. (Flutter parallel: flutter_svg's SvgPicture, or a CustomPaint).
-// These files are typically GENERATED from an .svg by react-native-svg-transformer
-// or svgr, which is why they take (props) and spread {...props} onto <Svg> —
-// so callers can override width/height/fill, e.g. <WhatsappIcon width={30} />.
-// It's passed into SocialSection as icon={<WhatsappIcon />}.
+// Generated SVG wrapper. RN has no built-in SVG — react-native-svg supplies
+// <Svg>/<Path>. Flutter parallel: flutter_svg's SvgPicture.
+// The (props) + {...props} spread is what lets callers override size/colour,
+// e.g. <WhatsappIcon width={30} />. Every icon in this folder follows this shape.
 const WhatsappIcon = (props) => (
   <Svg
     width={22}

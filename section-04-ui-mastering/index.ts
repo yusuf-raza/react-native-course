@@ -1,7 +1,7 @@
-import { registerRootComponent } from 'expo';
+import { registerRootComponent } from "expo";
 
-import App from './app/App';   
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
+import App from "./src/App";
+
+// Entry point. registerRootComponent wraps AppRegistry.registerComponent and
+// works in both Expo Go and native builds. Flutter parallel: runApp(MyApp()).
 registerRootComponent(App);

@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import AppLogo from "../components/AppLogo";
-import IntroBottomRightImage from "../components/IntroBottomRightImage";
+import { View, StyleSheet } from "react-native";
+import AppLogo from "@/components/icons/AppLogo";
+import IntroBottomRightImage from "@/components/icons/IntroBottomRightImage";
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 
+  // position:"absolute" + bottom/right pins to a corner.
+  // Flutter parallel: Positioned inside a Stack.
   bottomRightImage: {
     bottom: 0,
     right: 0,

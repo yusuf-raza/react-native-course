@@ -1,6 +1,5 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
-// Same generated-SVG pattern as WhatsappIcon.tsx (see notes there).
 const InstagramIcon = (props) => (
   <Svg
     width={20}

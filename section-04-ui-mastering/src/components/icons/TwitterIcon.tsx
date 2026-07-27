@@ -1,9 +1,5 @@
 import * as React from "react";
 import Svg, { Rect, Path } from "react-native-svg";
-// Same generated-SVG pattern as WhatsappIcon.tsx (see notes there).
-// NOTE: filename is "TwittterIcon" (triple-t typo) but the component is
-// "TwitterIcon" — the import path must match the file, the name in JSX must
-// match the export. Worth renaming the file to avoid confusion.
 const TwitterIcon = (props) => (
   <Svg
     width={20}
