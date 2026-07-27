@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import ContactUsScreen from "./screens/ContactUsScreen";
   import { SafeAreaProvider } from "react-native-safe-area-context";
 import HomeScreen from "./screens/HomeScreen";
+import PaymentScreen from "./screens/PaymentScreen";
 
 export default function App() {
   return (
@@ -12,7 +13,7 @@ export default function App() {
     // consumes these values and actually pads. No provider => consumers read 0.
     // (Optional upgrade: pass initialWindowMetrics to avoid a first-frame flicker.)
     <SafeAreaProvider>
-      <HomeScreen/>
+      <PaymentScreen/>
       <StatusBar style="auto" />
     </SafeAreaProvider>
   );
