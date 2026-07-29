@@ -1,24 +1,49 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { s } from "react-native-size-matters";
 import React from "react";
+import CheckIcon from "@/components/icons/CheckIcon";
 
-// React calls a component with ONE props object, never positional args — hence
-// the destructuring. `icon: Icon` renames the prop to a Capitalized local name
-// because JSX reads lowercase tags (<icon />) as built-in host elements.
-// Flutter parallel: props ≈ named constructor params.
-const PaymentCard = ({ icon: Icon, title }) => {
+import type { ComponentType } from "react";
+import type { SvgProps } from "react-native-svg";
+
+type PaymentCardProps = {
+  icon: ComponentType<SvgProps>;
+  title: string;
+  isSelected?: boolean;
+  onPress: () => void;
+};
+
+// Flutter parallel: named constructor parameters.
+const PaymentCard = ({
+  icon: Icon,
+  title,
+  isSelected = false,
+  onPress,
+}: PaymentCardProps) => {
   return (
-    <View style={styles.paymentTypeContainer}>
-      <View style={styles.paymentTypeIcon}>
-        {/* {icon} rendered nothing — a bare function isn't a valid React child.
-            <Icon /> invokes it and produces an element. */}
-        <Icon />
-      </View>
+    // RN onPress is Flutter's onTap.
+    <TouchableOpacity onPress={() => onPress()}>
+      {/* View is close to Flutter's Container. */}
+      <View style={styles.paymentTypeContainer}>
+        <View
+          style={[
+            isSelected
+              ? styles.selectedPaymentTypeIcon
+              : styles.paymentTypeIcon,
+          ]}
+        >
+          {/* Icon is a component type, like a Flutter WidgetBuilder. */}
+          <Icon />
+          {isSelected ? (
+            <View style={styles.checkMarkContainer}>
+              <CheckIcon />
+            </View>
+          ) : null}
+        </View>
 
-      {/* Braces drop from JSX text back into JS. Without them RN throws
-          "Text strings must be rendered within a <Text> component". */}
-      <Text style={styles.paymentTextStyle}>{title}</Text>
-    </View>
+        <Text style={styles.paymentTextStyle}>{title}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -27,9 +52,24 @@ export default PaymentCard;
 const styles = StyleSheet.create({
   paymentTypeContainer: {
     alignItems: "center",
-    // GOTCHA: `color` only applies to Text in RN — it's a no-op on a View.
+    // Warning: color does not style a View; use it on Text.
     color: "red",
   },
+
+  checkMarkContainer: {
+    position: "absolute",
+    top: -10,
+    right: -10,
+    width: s(24),
+    height: s(24),
+    backgroundColor: "#FF7622",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: s(2),
+    borderRadius: s(50),
+    borderColor: "#FFFFFF",
+  },
+
   paymentTypeIcon: {
     backgroundColor: "#F0F5FA",
     width: s(85),
@@ -37,6 +77,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: s(9.6),
+  },
+
+  selectedPaymentTypeIcon: {
+    backgroundColor: "#FFFFFF",
+    width: s(85),
+    height: s(72),
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: s(9.6),
+    borderWidth: s(2),
+    borderColor: "#FF7622",
   },
   paymentTextStyle: {
     color: "#464E57",

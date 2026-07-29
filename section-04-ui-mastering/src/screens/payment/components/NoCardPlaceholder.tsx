@@ -2,18 +2,18 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { s, vs } from "react-native-size-matters";
 import CardIcon from "@/components/icons/CardIcon";
+import LottieView from "lottie-react-native";
 
-// Empty state shown when no card is saved. No props.
-// Flutter parallel: a StatelessWidget with no constructor params —
-// Container(decoration: ...) wrapping a centred Column.
+// Flutter parallel: a StatelessWidget with a centered Column.
 const NoCardPlaceholder = () => (
   <View style={styles.container}>
-    {/* RN has no Column/Row widget. EVERY View is a flex container defaulting to
-        flexDirection:"column" — so this View IS the Column. */}
-    <CardIcon />
+    <LottieView
+      source={require("../../../components/lottie/cardLottie.json")}
+      style={{ width: s(169), height: vs(107) }}
+      autoPlay
+      loop
+    />
 
-    {/* No DefaultTextStyle ancestor in RN: a <Text> inherits from a parent
-        <Text>, never from a parent <View>. */}
     <Text style={styles.heading}>No master card added</Text>
     <Text style={styles.subtitle}>
       You can add a mastercard and save it for later
@@ -23,33 +23,30 @@ const NoCardPlaceholder = () => (
 
 export default NoCardPlaceholder;
 
-// s()/vs() ≈ flutter_screenutil: s(10) is like 10.w, vs(257) like 257.h.
-// StyleSheet.create builds the object once; an inline style={{...}} allocates a
-// new one every render. Flutter parallel: hoisting a const TextStyle out of build().
+// s()/vs() are similar to flutter_screenutil dimensions.
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F7F8F9", // BoxDecoration(color:)
-    height: vs(257), // SizedBox(height: 257)
-    justifyContent: "center", // MainAxisAlignment.center — MAIN axis (vertical)
-    alignItems: "center", // CrossAxisAlignment.center — CROSS axis (horizontal)
-    borderRadius: s(10), // BorderRadius.circular(10), no wrapper needed
-    marginBottom: s(15), // EdgeInsets.only(bottom: 15)
+    backgroundColor: "#F7F8F9",
+    height: vs(257),
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: s(10),
+    marginBottom: s(15),
   },
   heading: {
     color: "#32343E",
-    fontWeight: "bold", // FontWeight.bold, but RN wants the STRING "bold"
+    fontWeight: "bold", // Flutter: FontWeight.bold.
     fontSize: s(19),
-    marginTop: s(20), // Text takes margin directly in RN; Flutter needs Padding
+    marginTop: s(20),
   },
   subtitle: {
     color: "#2D2D2D",
     fontSize: s(15),
-    paddingHorizontal: s(30), // EdgeInsets.symmetric(horizontal: 30)
+    paddingHorizontal: s(30),
     marginTop: s(6),
-    // GOTCHA: RN lineHeight is ABSOLUTE px; Flutter's TextStyle(height:) is a
-    // MULTIPLIER of fontSize. 24 here is not height: 24 there.
+    // Warning: RN lineHeight is pixels; Flutter TextStyle height is a multiplier.
     lineHeight: s(24),
     letterSpacing: 0.5,
-    textAlign: "center", // TextAlign.center
+    textAlign: "center",
   },
 });

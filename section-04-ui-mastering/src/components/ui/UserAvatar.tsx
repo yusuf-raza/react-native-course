@@ -5,12 +5,7 @@ import React from "react";
 const UserAvatar = () => {
   return (
     <TouchableOpacity onPress={() => console.log("profile picture tapped")}>
-      {/* Network image: source={{ uri }} — double braces because the outer pair
-          is the JSX expression and the inner pair is the object.
-          Flutter parallel: Image.network(url); a bundled asset would be
-          source={require("./path.png")}, i.e. AssetImage.
-          GOTCHA: network images need an explicit width/height or they collapse
-          to 0 and never appear. */}
+      {/* Flutter: Image.network(url). Warning: give network images a size. */}
       <Image
         style={styles.avatar}
         source={{

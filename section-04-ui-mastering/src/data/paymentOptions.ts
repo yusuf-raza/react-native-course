@@ -3,10 +3,7 @@ import MastercardIcon from "@/components/icons/MastercardIcon";
 import PaypalIcon from "@/components/icons/PaypalIcon";
 import VisaIcon from "@/components/icons/VisaIcon";
 
-// `icon` holds the component REFERENCE (no parens, no JSX) — the file stays .ts
-// because there is no markup in it. PaymentCard is what turns each reference
-// into an element with <Icon />.
-// Flutter parallel: storing a WidgetBuilder / Type rather than a built Widget.
+// Store icon component types, similar to storing a Flutter WidgetBuilder.
 export const paymentOptions = [
   {
     id: '1',

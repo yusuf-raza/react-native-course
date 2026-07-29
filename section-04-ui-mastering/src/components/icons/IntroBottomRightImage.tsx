@@ -1,13 +1,12 @@
 import * as React from "react";
 import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
-const IntroBottomRightImage = (props) => (
+import type { SvgProps } from "react-native-svg";
+const IntroBottomRightImage = (props: SvgProps) => (
   <Svg
     width={197}
     height={200}
     viewBox="0 0 197 200"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlnsXlink="http://www.w3.org/1999/xlink"
     {...props}
   >
     <Rect width={197} height={200} fill="url(#pattern0_4_210)" />

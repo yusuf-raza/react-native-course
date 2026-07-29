@@ -3,11 +3,10 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "react-native-size-matters";
 import BackButton from "@/components/ui/BackButton";
-import { paymentOptions } from "@/data/paymentOptions";
-import PaymentCard from "./components/PaymentCard";
 import NoCardPlaceholder from "./components/NoCardPlaceholder";
 import AddNewButton from "./components/AddNewButton";
 import PayAndConfirmButton from "./components/PayAndConfirmButton";
+import PaymentList from "./components/PaymentList";
 
 const PaymentScreen = () => {
   return (
@@ -17,27 +16,20 @@ const PaymentScreen = () => {
         <Text style={styles.title}>Payment</Text>
       </View>
 
-      {/* renderItem returns JSX — don't CALL PaymentCard(...). A plain call
-          "works" but React never registers it as a component, so it gets no
-          hooks/state and keyExtractor's key attaches to nothing. Unlike Flutter,
-          PaymentCard(...) is NOT a constructor.
-          Note: comments can't sit between JSX attributes, only between children. */}
-      {/* <FlatList
-        data={paymentOptions}
-        renderItem={({ item }) => (
-          <PaymentCard icon={item.icon} title={item.title} />
-        )}
-        keyExtractor={(item) => item.id}
-        horizontal
-        contentContainerStyle={{ gap: s(16), marginTop: s(35), height: s(70) }}
-      /> */}
+      <PaymentList />
+
       <NoCardPlaceholder />
 
-      {/* The screen reads as a list of intentions instead of a wall of markup —
-          the payoff of extracting. Each child owns its styles; the screen owns
-          layout and wiring. */}
       <AddNewButton onPress={() => console.log("add new tapped")} />
 
+      <View style={{
+        flexDirection:'row',
+        alignItems:'center',
+        marginVertical:s(25)
+      }}>
+        <Text style={{ color: "#A0A5BA", fontSize:s(14) }}>TOTAL:</Text>
+        <Text style={{ color: "#181C2E", fontSize:s(30)}}>$96</Text>
+      </View>
       <PayAndConfirmButton
         onPress={() => console.log("pay and confirm tapped")}
       />

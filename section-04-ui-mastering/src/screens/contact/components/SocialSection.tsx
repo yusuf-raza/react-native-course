@@ -1,29 +1,25 @@
 import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
 import React from "react";
+import type { ReactNode } from "react";
 import Svg, { Path } from "react-native-svg";
 import { s, vs } from "react-native-size-matters";
 
-// Props destructured out of the single props object.
-// Flutter parallel: named constructor parameters.
-// `icon` arrives as a built ELEMENT, `onclick` as a callback.
-//
-// PROP DRILLING: this used to forward icon into <SocialCircle> and onclick into
-// <ShareButton> — hops that existed only to pass a prop through. Inlining them
-// means both are consumed where they arrive. Trade-off: inline if the piece
-// isn't reused; extract a shared component if it is.
-const SocialSection = ({ title, icon, onclick }) => {
+// Flutter parallel: named constructor parameters and a child Widget.
+type SocialSectionProps = {
+  title: string;
+  icon: ReactNode;
+  onclick: () => void;
+};
+
+const SocialSection = ({ title, icon, onclick }: SocialSectionProps) => {
   return (
     <View style={styles.row}>
       <View style={styles.labelGroup}>
-        {/* Braces make `icon` the VALUE, not the literal text "icon".
-            Flutter parallel: a Container with a child Widget. */}
         <View style={styles.circle}>{icon}</View>
         <Text style={styles.label}>{title}</Text>
       </View>
 
-      {/* onPress is RN's tap handler (Flutter: onTap). GOTCHA: `onClick` is a
-          web/DOM name and does nothing here. Pass the function itself —
-          onPress={() => onclick} is a bug (returns it without calling). */}
+      {/* RN onPress is Flutter's onTap; pass the callback itself. */}
       <TouchableOpacity onPress={onclick}>
         <View style={styles.shareCircle}>
           <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
@@ -46,11 +42,11 @@ export default SocialSection;
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
-    justifyContent: "space-between", // MainAxisAlignment.spaceBetween
+    justifyContent: "space-between",
     alignItems: "center",
-    borderBottomWidth: 1, // Flutter: Border(bottom: BorderSide(...))
+    borderBottomWidth: 1,
     borderBottomColor: "#E4E6E8",
-    paddingVertical: vs(15), // EdgeInsets.symmetric(vertical: 15)
+    paddingVertical: vs(15),
   },
   labelGroup: {
     flexDirection: "row",
@@ -60,12 +56,11 @@ const styles = StyleSheet.create({
     fontSize: s(12),
     color: "#8083A3",
     lineHeight: s(18),
-    // marginStart = start edge, flips under RTL. marginLeft would not.
+    // marginStart respects RTL; Flutter parallel: EdgeInsetsDirectional.
     marginStart: 20,
   },
 
-  // borderRadius = half the width → a circle.
-  // Flutter parallel: BoxDecoration(shape: BoxShape.circle).
+  // Flutter: BoxDecoration(shape: BoxShape.circle).
   circle: {
     width: s(46),
     height: s(46),

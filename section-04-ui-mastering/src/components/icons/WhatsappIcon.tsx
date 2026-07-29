@@ -1,16 +1,13 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
-// Generated SVG wrapper. RN has no built-in SVG — react-native-svg supplies
-// <Svg>/<Path>. Flutter parallel: flutter_svg's SvgPicture.
-// The (props) + {...props} spread is what lets callers override size/colour,
-// e.g. <WhatsappIcon width={30} />. Every icon in this folder follows this shape.
-const WhatsappIcon = (props) => (
+import type { SvgProps } from "react-native-svg";
+// react-native-svg is the Flutter equivalent of flutter_svg's SvgPicture.
+const WhatsappIcon = (props: SvgProps) => (
   <Svg
     width={22}
     height={22}
     viewBox="0 0 22 22"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <Path

@@ -10,22 +10,15 @@ import TwitterIcon from "@/components/icons/TwitterIcon";
 import TiktokIcon from "@/components/icons/TiktokIcon";
 import SnapchatIcon from "@/components/icons/SnapchatIcon";
 
-// A "screen" is just a component; only convention makes it one.
-// Flutter parallel: the widget a route builds — a Scaffold's body.
+// Flutter parallel: a route widget whose body is a SafeArea.
 const ContactUsScreen = () => {
   return (
-    // SafeAreaView pads content away from the notch / home indicator.
-    // Flutter parallel: SafeArea.
     <SafeAreaView style={styles.screen}>
       <Header />
       <Text style={styles.title}>Contact Us</Text>
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Social Media Platforms</Text>
-        {/* One component driven by props. icon={<WhatsappIcon />} passes a built
-            ELEMENT as a prop — Flutter: passing a Widget into a constructor,
-            e.g. `leading: Icon(...)`. Next step: replace these 5 near-identical
-            tags with an array + .map(). */}
         <SocialSection
           title="WhatsApp"
           icon={<WhatsappIcon />}
@@ -80,8 +73,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: s(16),
-    // GOTCHA: "semibold" is not a valid RN fontWeight — only "normal" | "bold" |
-    // "100".."900". Invalid values are ignored, so this renders normal. Use "600".
+    // Warning: RN has no "semibold" value; use "600".
     fontWeight: "semibold",
   },
 });

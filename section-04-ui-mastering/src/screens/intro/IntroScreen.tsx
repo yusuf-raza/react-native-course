@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 
-  // position:"absolute" + bottom/right pins to a corner.
   // Flutter parallel: Positioned inside a Stack.
   bottomRightImage: {
     bottom: 0,

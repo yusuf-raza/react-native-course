@@ -1,12 +1,12 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
-const VisaIcon = (props) => (
+import type { SvgProps } from "react-native-svg";
+const VisaIcon = (props: SvgProps) => (
   <Svg
     width={41}
     height={14}
     viewBox="0 0 41 14"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <Path

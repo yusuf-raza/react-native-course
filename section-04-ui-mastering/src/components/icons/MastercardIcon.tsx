@@ -1,12 +1,12 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
-const MastercardIcon = (props) => (
+import type { SvgProps } from "react-native-svg";
+const MastercardIcon = (props: SvgProps) => (
   <Svg
     width={33}
     height={25}
     viewBox="0 0 33 25"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <Path

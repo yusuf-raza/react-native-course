@@ -2,29 +2,18 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { s, vs } from "react-native-size-matters";
 import React, { useState } from "react";
 
-// Declared OUTSIDE the component so it isn't rebuilt on every render.
-// Flutter parallel: `static const tabs = ["Live", "Recorded"];`
+// Flutter parallel: a static const list.
 const tabs = ["Live", "Recorded"];
 
 const TopTabs = () => {
-  // useState = memory that survives re-renders. "Live" is only the INITIAL
-  // value; the setter both stores and schedules a re-render.
-  // Flutter parallel: a StatefulWidget field + setState() in one call —
-  // setActiveTab("Recorded") == `setState(() => activeTab = "Recorded")`.
-  // GOTCHA: never reassign activeTab directly; nothing would re-render.
+  // useState + setter is close to a field updated inside setState().
   const [activeTab, setActiveTab] = useState("Live");
 
   return (
     <View style={styles.container}>
-      {/* .map() builds elements from an array.
-          Flutter parallel: tabs.map((t) => Widget(...)).toList() */}
       {tabs.map((tabName) => {
-        // Recomputed every render, so it always reflects current state.
         const isActive = activeTab == tabName;
         return (
-          // `key` is required on elements returned from .map(). Flutter parallel:
-          // Key in a list. Must be unique among siblings and tied to the item,
-          // not the array index.
           <View
             style={isActive ? styles.activeTabButton : styles.inactiveTabButton}
             key={tabName}
@@ -55,8 +44,7 @@ const styles = StyleSheet.create({
     padding: s(4),
   },
 
-  // flex:1 on both tabs splits the row evenly.
-  // Flutter parallel: Expanded inside a Row.
+  // Flutter: Expanded(flex: 1) in a Row.
   activeTabButton: {
     height: vs(32),
     justifyContent: "center",
@@ -77,8 +65,7 @@ const styles = StyleSheet.create({
   activeText: {
     color: "#FFFFFF",
     fontSize: s(14),
-    // GOTCHA: "semibold" is not valid in RN — only "normal" | "bold" |
-    // "100".."900". Invalid values are ignored. Use "600".
+    // Warning: RN has no "semibold" value; use "600".
     fontWeight: "semibold",
   },
 

@@ -1,12 +1,12 @@
 import * as React from "react";
 import Svg, { Mask, Rect, G, Path } from "react-native-svg";
-const CardIcon = (props) => (
+import type { SvgProps } from "react-native-svg";
+const CardIcon = (props: SvgProps) => (
   <Svg
     width={169}
     height={107}
     viewBox="0 0 169 107"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <Mask

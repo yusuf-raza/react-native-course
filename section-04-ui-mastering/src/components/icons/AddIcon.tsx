@@ -1,12 +1,12 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
-const AddIcon = (props) => (
+import type { SvgProps } from "react-native-svg";
+const AddIcon = (props: SvgProps) => (
   <Svg
     width={17}
     height={17}
     viewBox="0 0 17 17"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <Path
