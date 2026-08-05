@@ -7,6 +7,8 @@ import LottieView from "lottie-react-native";
 // Flutter parallel: a StatelessWidget with a centered Column.
 const NoCardPlaceholder = () => (
   <View style={styles.container}>
+
+    {/* <CardIcon/> */}
     <LottieView
       source={require("../../../components/lottie/cardLottie.json")}
       style={{ width: s(169), height: vs(107) }}
